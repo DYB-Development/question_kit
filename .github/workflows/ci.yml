@@ -7,7 +7,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       RUBY_VERSION: 3.3.5
       RUBOCOP_CACHE_ROOT: tmp/rubocop
@@ -38,7 +38,7 @@ jobs:
         run: bundle exec rake the_local:check
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     # services:
     #  redis:
