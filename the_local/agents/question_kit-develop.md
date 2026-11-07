@@ -13,6 +13,15 @@ A gem that holds the rules for easy_flow quizzes that more than one app needs. I
 
 ## Interface
 
-- `QuestionKit::VERSION` — the installed version.
+- `QuestionKit::VERSION` — the installed version of question_kit, as a string such as `"0.1.0"`.
 
-No answer rules are released yet. Until a release adds them, this local has no step to follow: tell the developer that the rule they need is not in question_kit yet and ask whether to wait for the release that adds it.
+## How to use it
+
+1. When the app needs to know which question_kit it runs on, read `QuestionKit::VERSION`.
+2. When the app needs an answer rule, look for it in this local's Interface. If it is not listed, tell the developer the rule is not in question_kit yet and ask whether to wait for the release that adds it.
+3. Run the tests for the code that changed.
+
+## Conventions
+
+- Never copy the version number into the app and never reassign the constant.
+- Never write an answer rule in the app or call alembic for one.

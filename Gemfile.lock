@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/DYB-Development/the_local.git
+  revision: 28d632ccb3897d4220d4d7bf46b4f6428d1a112d
+  specs:
+    the_local (0.4.3)
+
 PATH
   remote: .
   specs:
@@ -289,6 +295,7 @@ DEPENDENCIES
   question_kit!
   rubocop-rails-omakase
   sqlite3
+  the_local!
 
 BUNDLED WITH
    2.7.1
