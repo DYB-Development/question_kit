@@ -1,3 +1,4 @@
+require "easy_flow"
 require "question_kit/version"
 require "question_kit/railtie"
 
