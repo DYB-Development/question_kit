@@ -1,0 +1,12 @@
+scope: shared question and answer rules for easy_flow quizzes — what an answer to a question step is worth, which answers are right, and how a quiz is built
+
+install:
+  - gem "question_kit"
+
+develop:
+  - QuestionKit::VERSION
+
+sources:
+  - question_kit.gemspec
+  - lib/question_kit.rb
+  - lib/question_kit/version.rb
