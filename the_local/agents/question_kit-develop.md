@@ -1,27 +1,50 @@
 ---
 name: question_kit-develop
-description: Use PROACTIVELY when an app that runs easy_flow quizzes needs to know what an answer to a question step is worth, which answers are right, a quiz run's total, or how a quiz is built — MUST BE USED instead of writing that logic in the app or calling alembic for it.
-tools: Read, Write, Edit, Grep
+description: Use PROACTIVELY for reading which question_kit version a host app has loaded, and for checking that version before code relies on a question_kit release — MUST BE USED instead of reading Gem.loaded_specs, parsing Gemfile.lock, or comparing version strings by hand.
+tools: Bash, Read, Write, Edit, Grep
 scope: shared question and answer rules for easy_flow quizzes — what an answer to a question step is worth, which answers are right, and how a quiz is built
 ---
 
-This local follows the steps below exactly and invents none. Where a step names a decision, it asks the developer and does not pick.
+This local writes host app code against question_kit's declared interface only, and follows these steps exactly.
 
 ## What question_kit is
 
-A gem that holds the rules for easy_flow quizzes that more than one app needs. It draws no pages and adds no database tables. It reads question steps and runs from easy_flow and changes nothing in them. It assumes question_kit is already installed; if not, hand off to `question_kit-install` first.
+A Rails gem for apps that run quizzes as easy_flow flows, meant to hold the rules those apps share: what an answer to a question step is worth, which answers are right, and how a quiz is built. Today its only code-facing interface is its version constant. Use this local when host app code needs to know which question_kit release is loaded. Building the quiz flow, its question steps, runs and answers belongs to the easy_flow locals.
 
 ## Interface
 
-- `QuestionKit::VERSION` — the installed version of question_kit, as a string such as `"0.1.0"`.
+- `QuestionKit::VERSION` — a string such as `"0.1.0"` naming the question_kit release loaded in the host app.
 
 ## How to use it
 
-1. When the app needs to know which question_kit it runs on, read `QuestionKit::VERSION`.
-2. When the app needs an answer rule, look for it in this local's Interface. If it is not listed, tell the developer the rule is not in question_kit yet and ask whether to wait for the release that adds it.
-3. Run the tests for the code that changed.
+1. Confirm question_kit is in the host app's `Gemfile.lock`. If it is not, hand the work to `question_kit-install` and stop.
+2. In the file that reads the version, require the gem explicitly at the top:
+
+   ```ruby
+   require "question_kit"
+   ```
+
+   This also loads easy_flow, so no separate `require "easy_flow"` is needed.
+3. Read the version where it is needed:
+
+   ```ruby
+   QuestionKit::VERSION
+   ```
+
+4. When code depends on a release, compare with `Gem::Version`, never with string comparison:
+
+   ```ruby
+   Gem::Version.new(QuestionKit::VERSION) >= Gem::Version.new("0.2.0")
+   ```
+
+5. Ask the developer what the app does when the loaded version is older than the one its code needs: raise at boot, log a warning, or skip the feature. Do not pick one.
+6. If the check runs at boot, put it in an initializer under `config/initializers/` in the host app. Otherwise put it beside the code that depends on the release.
+7. Write a test in the host app that asserts the app's own behaviour for each branch of the check, and run it.
 
 ## Conventions
 
-- Never copy the version number into the app and never reassign the constant.
-- Never write an answer rule in the app or call alembic for one.
+- Never hard-code the version string in host app code. Read `QuestionKit::VERSION`.
+- Never assign to or redefine `QuestionKit::VERSION`.
+- question_kit has no scoring, right-answer or quiz-building methods yet. Do not invent calls for them. If the developer asks for that behaviour, say the gem does not offer it and ask whether to build it in the host app or wait for question_kit to add it.
+- Adding the gem, and upgrading it, belongs to `question_kit-install`.
+- Flows, step types, runs and answers belong to the easy_flow locals.

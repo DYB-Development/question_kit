@@ -1,31 +1,44 @@
 ---
 name: question_kit-install
-description: Use to add question_kit to a Rails app that runs easy_flow — adding the gem, installing it, and confirming the app still boots and its tests still pass.
+description: Use to hook question_kit into a project — adding the gem to the host app's Gemfile and installing it alongside easy_flow.
 tools: Bash, Read, Edit
 scope: shared question and answer rules for easy_flow quizzes — what an answer to a question step is worth, which answers are right, and how a quiz is built
 ---
 
-This local follows the steps below exactly and invents none. Where a step names a decision, it asks the developer and does not pick.
+This local follows these steps exactly and invents none.
 
 ## What question_kit is
 
-A gem that holds the rules for easy_flow quizzes that more than one app needs: what an answer to a question step is worth, which answers are right, and how a quiz is built. It draws no pages and adds no database tables. Add it when a Rails 8.1.3 or later app runs quizzes as easy_flow flows and needs those rules without depending on alembic.
+A Rails gem holding the shared quiz rules for apps that run quizzes as easy_flow flows, hooked in when a host app runs easy_flow quizzes.
 
 ## Interface
 
-- `gem "question_kit"` — the Gemfile line that adds question_kit to the app. It brings easy_flow 0.35 or a later 0.x release with it.
+- `gem "question_kit"` — the Gemfile line that adds question_kit, and with it easy_flow, to the host app.
 
 ## How to use it
 
-1. Read the `easy_flow` version in the app's `Gemfile.lock`, if there is one. question_kit needs easy_flow 0.35 or a later 0.x release. If the app holds an easy_flow outside that range, stop and ask the developer how to resolve the easy_flow version.
-2. Add `gem "question_kit"` to the app's Gemfile.
-3. Run `bundle install`.
-4. Run `bundle info question_kit` and confirm it names the installed version.
-5. If the app uses `the_local`, run `bin/rails the_local:refresh` so the app's coding agents get question_kit's locals.
-6. Boot the app with `bin/rails runner "puts :ok"` and confirm it prints `ok`.
-7. Run the app's test suite and confirm it passes.
+1. Check the host app's Rails version in `Gemfile.lock`. question_kit needs Rails 8.1.3 or later, so stop and tell the developer if the app is older.
+2. Check `Gemfile.lock` for easy_flow. question_kit needs easy_flow 0.35 or a later 0.x release. If the app pins an easy_flow version outside that range, ask the developer whether to move the pin before going on.
+3. Add the gem to the host app's `Gemfile`:
+
+   ```ruby
+   gem "question_kit"
+   ```
+
+4. Run:
+
+   ```
+   bundle install
+   ```
+
+   This edits `Gemfile.lock` and brings in easy_flow if the app did not have it.
+5. Check whether easy_flow is already hooked into the app: its migrations copied and run, its engine mounted, and its hosts declared. If any of that is missing, hand the work to `easy_flow-install`, and ask the developer which hosts to declare rather than picking them.
+
+question_kit has no generator, no initializer, no migrations and no routes of its own. Requiring the gem loads easy_flow, so the host app needs no separate `require "easy_flow"`.
 
 ## Conventions
 
-- question_kit needs no migration, no route, no initializer and no mount, so none is added.
-- Using question_kit from the app's code belongs to the `question_kit-develop` local.
+- After install, run `bundle list | grep -E "question_kit|easy_flow"` and confirm both gems are listed.
+- After a `bundle update question_kit`, check `Gemfile.lock` again for the easy_flow version it brought in, and run `easy_flow-install` for any new easy_flow migrations.
+- Setting up easy_flow itself, its hosts, step types and admin pages belongs to `easy_flow-install`.
+- Writing code against question_kit belongs to `question_kit-develop`.
