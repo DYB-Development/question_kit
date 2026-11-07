@@ -14,3 +14,5 @@ gem "rubocop-rails-omakase", require: false
 # gem "debug", ">= 1.0.0"
 
 gem "the_local", github: "DYB-Development/the_local"
+
+gem "keystone_ui"
