@@ -50,5 +50,9 @@ module QuestionKit
     test "a typed answer differing only in letter case and outer spaces is worth one" do
       assert_equal 1, Score.worth(capital, "  pARIS ")
     end
+
+    test "a typed answer matching no accepted answer is worth nothing" do
+      assert_equal 0, Score.worth(capital, "London")
+    end
   end
 end
