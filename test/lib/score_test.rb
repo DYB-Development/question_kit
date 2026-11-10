@@ -21,5 +21,14 @@ module QuestionKit
 
       assert_equal 5, Score.worth(written, "high")
     end
+
+    def flags
+      { "type" => "multiple_select",
+        "answers" => [ { "value" => "red", "weight" => 2 }, { "value" => "blue", "weight" => 1 }, { "value" => "green", "weight" => 0 } ] }
+    end
+
+    test "a multiple select answer picking every right answer and no other is worth one" do
+      assert_equal 1, Score.worth(flags, [ "blue", "red" ])
+    end
   end
 end
