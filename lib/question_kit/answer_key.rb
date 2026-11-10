@@ -7,5 +7,9 @@ module QuestionKit
       else Score.right_answers(step).first
       end
     end
+
+    def self.accepted(step)
+      Array(step["accepted_answers"]).map { |answer| answer["value"] }
+    end
   end
 end

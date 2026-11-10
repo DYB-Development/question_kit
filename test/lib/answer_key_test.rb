@@ -21,5 +21,9 @@ module QuestionKit
     test "the key to a fill-in-the-blank question is its first accepted answer" do
       assert_equal "Paris", AnswerKey.chosen(capital)
     end
+
+    test "a fill-in-the-blank question accepts every answer listed on it" do
+      assert_equal %w[Paris Paree], AnswerKey.accepted(capital)
+    end
   end
 end
