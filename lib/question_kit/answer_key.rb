@@ -1,7 +1,10 @@
 module QuestionKit
   module AnswerKey
     def self.chosen(step)
-      Score.right_answers(step).first
+      case step["type"]
+      when "multiple_select" then Score.right_answers(step)
+      else Score.right_answers(step).first
+      end
     end
   end
 end
