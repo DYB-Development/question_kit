@@ -15,5 +15,11 @@ module QuestionKit
 
       assert_equal 0, Score.worth(team, "no")
     end
+
+    test "a weight a form wrote as text is read as a number" do
+      written = { "options" => [ { "value" => "high", "weight" => "5" } ] }
+
+      assert_equal 5, Score.worth(written, "high")
+    end
   end
 end
