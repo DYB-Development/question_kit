@@ -38,5 +38,13 @@ module QuestionKit
     test "a multiple select answer missing a right answer is worth nothing" do
       assert_equal 0, Score.worth(flags, [ "red" ])
     end
+
+    def capital
+      { "type" => "fill_in_the_blank", "accepted_answers" => [ { "value" => "Paris" }, { "value" => "Paree" } ] }
+    end
+
+    test "a typed answer matching an accepted answer is worth one" do
+      assert_equal 1, Score.worth(capital, "Paree")
+    end
   end
 end
