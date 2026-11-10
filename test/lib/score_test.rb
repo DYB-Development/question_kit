@@ -30,5 +30,9 @@ module QuestionKit
     test "a multiple select answer picking every right answer and no other is worth one" do
       assert_equal 1, Score.worth(flags, [ "blue", "red" ])
     end
+
+    test "a multiple select answer picking a wrong answer is worth nothing" do
+      assert_equal 0, Score.worth(flags, [ "blue", "red", "green" ])
+    end
   end
 end
