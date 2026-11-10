@@ -54,5 +54,13 @@ module QuestionKit
     test "a typed answer matching no accepted answer is worth nothing" do
       assert_equal 0, Score.worth(capital, "London")
     end
+
+    def steps
+      { "budget" => budget, "capital" => capital }
+    end
+
+    test "a run's total adds up the worth of every answer in it" do
+      assert_equal 6, Score.total({ "budget" => "high", "capital" => "Paris" }, steps)
+    end
   end
 end

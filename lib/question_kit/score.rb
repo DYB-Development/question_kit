@@ -1,5 +1,9 @@
 module QuestionKit
   module Score
+    def self.total(answers, steps)
+      answers.sum { |id, value| worth(steps[id.to_s].to_h, value) }
+    end
+
     def self.worth(step, value)
       return picked_worth(step, value) if step["type"] == "multiple_select"
       return typed_worth(step, value) if step["type"] == "fill_in_the_blank"
