@@ -62,5 +62,9 @@ module QuestionKit
     test "a run's total adds up the worth of every answer in it" do
       assert_equal 6, Score.total({ "budget" => "high", "capital" => "Paris" }, steps)
     end
+
+    test "a run's total counts nothing for an answer to a step it does not know" do
+      assert_equal 5, Score.total({ "budget" => "high", "invented" => "x" }, steps)
+    end
   end
 end
