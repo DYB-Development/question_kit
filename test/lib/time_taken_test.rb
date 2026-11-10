@@ -19,5 +19,11 @@ module QuestionKit
 
       assert_equal 90, TimeTaken.seconds(run)
     end
+
+    test "a run keeps no time when the flow saves its answers only once it finishes" do
+      run = Run.new(flow: Flow.new(false), created_at: started, completed_at: { a: started + 30 })
+
+      assert_nil TimeTaken.seconds(run)
+    end
   end
 end
