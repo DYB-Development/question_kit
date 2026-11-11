@@ -32,6 +32,12 @@ module QuestionKit
       assert_equal "runs-2", started("Runs").slug
     end
 
+    test "no title takes a slug that is the first word of one of the quiz routes" do
+      words = %w[manage pages runs]
+
+      assert_empty words.map { |word| started(word.capitalize).slug } & words
+    end
+
     private
       def started(title, host: "quizzes", owner: nil)
         EasyFlow::Definition.new(host: host, owner: owner, title: title).tap { |flow| TitledStart.new(flow).save }
