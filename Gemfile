@@ -3,6 +3,8 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in question_kit.gemspec.
 gemspec
 
+gem "easy_flow", ENV["EASY_FLOW_VERSION"] if ENV["EASY_FLOW_VERSION"]
+
 gem "puma"
 
 gem "sqlite3"
