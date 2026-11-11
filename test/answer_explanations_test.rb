@@ -18,6 +18,12 @@ class AnswerExplanationsTest < ActiveSupport::TestCase
     assert_match(/above zero.*one point.*every right answer and no others/, explained("multiple_select", "answers", "weight"))
   end
 
+  test "a host app's own explanation replaces question_kit's for that field" do
+    flow_host.setting_explanations = { question: { "answers.weight" => "The host app's words." } }
+
+    assert_equal "The host app's words.", explained("question", "answers", "weight")
+  end
+
   private
     def explained(step_type, list, field, host: flow_host)
       palette_entry(step_type, host)["record_explanations"][list][field]
