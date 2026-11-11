@@ -55,6 +55,16 @@ module QuestionKit
       assert_equal "morning-routine-2", flow.slug
     end
 
+    test "a flow that keeps losing the race for its slug stops trying" do
+      flow = EasyFlow::Definition.new(host: "quizzes", title: "Morning Routine")
+      flow.define_singleton_method(:save) do |**options|
+        EasyFlow::Definition.create!(host: "quizzes", slug: slug)
+        super(**options)
+      end
+
+      assert_raises(ActiveRecord::RecordNotUnique) { TitledStart.new(flow).save }
+    end
+
     private
       def started(title, host: "quizzes", owner: nil)
         EasyFlow::Definition.new(host: host, owner: owner, title: title).tap { |flow| TitledStart.new(flow).save }
