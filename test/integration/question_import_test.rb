@@ -25,6 +25,14 @@ module QuestionKit
       assert_response :not_found
     end
 
+    test "a builder cannot open the upload page for a quiz on another easy_flow host" do
+      other = EasyFlow::Definition.create!(host: "console", slug: "elsewhere", owner: @ours)
+
+      get ixport.new_import_path(key: :quiz_questions, target: other.to_global_id), headers: as(@ours)
+
+      assert_response :not_found
+    end
+
     private
       def flow_host
         EasyFlow.host_named(QuestionKit.flow_host)
