@@ -12,6 +12,12 @@ module QuestionKit
       assert_equal "morning-routine-2", started("Morning Routine").slug
     end
 
+    test "a flow keeps the plain slug when only another host uses the title" do
+      started("Morning Routine", host: "console")
+
+      assert_equal "morning-routine", started("Morning Routine").slug
+    end
+
     private
       def started(title, host: "quizzes", owner: nil)
         EasyFlow::Definition.new(host: host, owner: owner, title: title).tap { |flow| TitledStart.new(flow).save }
