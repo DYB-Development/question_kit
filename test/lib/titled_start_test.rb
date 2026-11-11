@@ -24,6 +24,10 @@ module QuestionKit
       assert_equal "morning-routine", started("Morning Routine", owner: Customer.create!(name: "Ours")).slug
     end
 
+    test "a title with no usable letters or numbers gets the plain fallback slug" do
+      assert_equal "quiz", started("?!").slug
+    end
+
     private
       def started(title, host: "quizzes", owner: nil)
         EasyFlow::Definition.new(host: host, owner: owner, title: title).tap { |flow| TitledStart.new(flow).save }
