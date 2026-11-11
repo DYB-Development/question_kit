@@ -76,6 +76,13 @@ module QuestionKit
       assert_includes flow.live_definition["nodes"].map { |step| step["question"] }, "Which planet is largest?"
     end
 
+    test "questions imported into a quiz are not asked before the quiz publishes" do
+      flow = quiz
+      post ixport.import_run_path(uploaded("questions.csv", into: flow)), headers: as(@ours)
+
+      assert_not_includes flow.reload.live_definition["nodes"].map { |step| step["question"] }, "Which planet is largest?"
+    end
+
     private
       def flow_host
         EasyFlow.host_named(QuestionKit.flow_host)
