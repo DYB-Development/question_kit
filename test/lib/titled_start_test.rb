@@ -28,6 +28,10 @@ module QuestionKit
       assert_equal "quiz", started("?!").slug
     end
 
+    test "a title that makes the slug of the runs address takes the next number" do
+      assert_equal "runs-2", started("Runs").slug
+    end
+
     private
       def started(title, host: "quizzes", owner: nil)
         EasyFlow::Definition.new(host: host, owner: owner, title: title).tap { |flow| TitledStart.new(flow).save }
