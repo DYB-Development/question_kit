@@ -42,5 +42,11 @@ module QuestionKit
       assert_equal "Space", EasyFlow::Steps::Question.category_of(added_step.config)
     end
 
+    test "a saved row is asked after the quiz's last question" do
+      row.save!
+
+      assert_equal [ added_step.id ], EasyFlow::Document.new(quiz.document).edges_from("first").map(&:to)
+    end
+
   end
 end
