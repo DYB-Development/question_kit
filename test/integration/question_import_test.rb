@@ -33,6 +33,14 @@ module QuestionKit
       assert_response :not_found
     end
 
+    test "a builder can open the upload page for another owner's quiz when the host keeps no owners" do
+      flow_host.owner_method = nil
+
+      get ixport.new_import_path(key: :quiz_questions, target: quiz(@theirs).to_global_id), headers: as(@ours)
+
+      assert_response :ok
+    end
+
     private
       def flow_host
         EasyFlow.host_named(QuestionKit.flow_host)
