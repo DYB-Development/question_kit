@@ -78,6 +78,14 @@ class AnswerExplanationsTest < ActiveSupport::TestCase
     assert_equal "The host app's words.", explained("question", "answers", "weight")
   end
 
+  test "a host declared again before the app is prepared still carries question_kit's text" do
+    EasyFlow.host(QuestionKit.flow_host)
+
+    Rails.application.reloader.prepare!
+
+    assert_match(/points/, explained("question", "answers", "weight"))
+  end
+
   private
     def explained(step_type, list, field, host: flow_host)
       palette_entry(step_type, host)["record_explanations"][list][field]
