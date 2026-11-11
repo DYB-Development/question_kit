@@ -59,5 +59,15 @@ module QuestionKit
       assert_equal [ "wrap_up" ], EasyFlow::Document.new(quiz.document).edges_from(added_step_id).map(&:to)
     end
 
+    test "a saved true/false row offers True and False and weights the right one" do
+      row(type: "True/false", question: "The Sun is a star.", answer_1: nil, answer_2: nil, answer_3: nil, right_answer: "true").save!
+
+      assert_equal [ { "value" => "True", "weight" => 1 }, { "value" => "False", "weight" => 0 } ], added_step.config["answers"]
+    end
+
+    test "a row with no question is refused for it" do
+      assert_equal [ "Question can't be blank" ], row(question: " ").tap(&:validate).errors.full_messages
+    end
+
   end
 end
