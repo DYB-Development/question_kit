@@ -36,5 +36,11 @@ module QuestionKit
         added_step.config["answers"]
     end
 
+    test "a saved row sets its question's category" do
+      row.save!
+
+      assert_equal "Space", EasyFlow::Steps::Question.category_of(added_step.config)
+    end
+
   end
 end
