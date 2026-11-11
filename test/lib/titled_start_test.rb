@@ -38,6 +38,12 @@ module QuestionKit
       assert_empty words.map { |word| started(word.capitalize).slug } & words
     end
 
+    test "a blank title is refused" do
+      flow = EasyFlow::Definition.new(host: "quizzes", title: "  ")
+
+      assert_not TitledStart.new(flow).save
+    end
+
     private
       def started(title, host: "quizzes", owner: nil)
         EasyFlow::Definition.new(host: host, owner: owner, title: title).tap { |flow| TitledStart.new(flow).save }
