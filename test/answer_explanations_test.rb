@@ -64,6 +64,12 @@ class AnswerExplanationsTest < ActiveSupport::TestCase
     assert_nil explained("question", "answers", "weight", host: EasyFlow::Host.new("console"))
   end
 
+  test "a host app setting one explanation keeps question_kit's text on the other fields" do
+    flow_host.setting_explanations = { question: { "answers.weight" => "The host app's words." } }
+
+    assert_match(/in place of its value/, explained("question", "answers", "label"))
+  end
+
   private
     def explained(step_type, list, field, host: flow_host)
       palette_entry(step_type, host)["record_explanations"][list][field]
