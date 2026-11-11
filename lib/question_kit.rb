@@ -5,6 +5,7 @@ require "question_kit/score"
 require "question_kit/answer_key"
 require "question_kit/time_taken"
 require "question_kit/titled_start"
+require "question_kit/uploaded_question"
 
 module QuestionKit
   # Your code goes here...
