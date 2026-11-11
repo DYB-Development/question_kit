@@ -50,6 +50,14 @@ module QuestionKit
         imported_steps(flow).map { |step| [ step.config["question"], step.config["answers"].map { |answer| answer.values_at("value", "weight") } ] }
     end
 
+    test "a file with a row that cannot become a question names that row and what is wrong with it" do
+      import = uploaded("questions_with_a_bad_row.csv", into: quiz)
+
+      get ixport.import_preview_path(import), headers: as(@ours)
+
+      assert_select "[data-refused-row]", text: /3\s+Right answer must be true or false/
+    end
+
     private
       def flow_host
         EasyFlow.host_named(QuestionKit.flow_host)
