@@ -56,6 +56,10 @@ class AnswerExplanationsTest < ActiveSupport::TestCase
     assert_match(/matches this text.*capitals.*one point/, explained("fill_in_the_blank", "accepted_answers", "value"))
   end
 
+  test "every other step type offers the same palette entry on the named host as on a plain host" do
+    assert_equal other_entries(EasyFlow::Host.new("plain")), other_entries(flow_host)
+  end
+
   private
     def explained(step_type, list, field, host: flow_host)
       palette_entry(step_type, host)["record_explanations"][list][field]
