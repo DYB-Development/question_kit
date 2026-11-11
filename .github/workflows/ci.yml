@@ -70,3 +70,37 @@ jobs:
           name: screenshots
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
+
+  easy_flow_range:
+    name: test (${{ matrix.edge }} easy_flow allowed)
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        edge: [ lowest, newest ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.5
+
+      - name: Pick the ${{ matrix.edge }} easy_flow release question_kit allows
+        run: |
+          version=$(ruby -e '
+            requirement = Gem::Specification.load("question_kit.gemspec").dependencies.find { |dependency| dependency.name == "easy_flow" }.requirement
+            released = `gem list --remote --all --exact easy_flow`[/\((.*)\)/, 1].split(", ").map { |number| Gem::Version.new(number) }
+            allowed = released.select { |version| requirement.satisfied_by?(version) && !version.prerelease? }
+            puts ARGV.first == "lowest" ? allowed.min : allowed.max
+          ' ${{ matrix.edge }})
+          echo "EASY_FLOW_VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Install gems with easy_flow ${{ env.EASY_FLOW_VERSION }}
+        run: bundle update easy_flow --conservative
+
+      - name: Run tests against easy_flow ${{ env.EASY_FLOW_VERSION }}
+        env:
+          RAILS_ENV: test
+        run: bin/test || { echo "::error::Tests failed against easy_flow $EASY_FLOW_VERSION"; exit 1; }
