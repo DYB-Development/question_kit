@@ -40,6 +40,10 @@ class AnswerExplanationsTest < ActiveSupport::TestCase
     assert_match(/saved with this answer.*does not show/, explained("question", "answers", "info"))
   end
 
+  test "no explanation names the gem to the admin reading it" do
+    assert_empty QuestionKit::AnswerExplanations::TEXT.values.flat_map(&:values).grep(/question_kit|question kit|questionkit|alembic/i)
+  end
+
   private
     def explained(step_type, list, field, host: flow_host)
       palette_entry(step_type, host)["record_explanations"][list][field]
