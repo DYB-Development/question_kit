@@ -44,6 +44,17 @@ module QuestionKit
       assert_not TitledStart.new(flow).save
     end
 
+    test "a flow that loses a race for its slug takes the next number" do
+      flow = EasyFlow::Definition.new(host: "quizzes", title: "Morning Routine")
+      flow.define_singleton_method(:save) do |**options|
+        EasyFlow::Definition.create!(host: "quizzes", slug: "morning-routine") unless EasyFlow::Definition.exists?(host: "quizzes", slug: "morning-routine")
+        super(**options)
+      end
+      TitledStart.new(flow).save
+
+      assert_equal "morning-routine-2", flow.slug
+    end
+
     private
       def started(title, host: "quizzes", owner: nil)
         EasyFlow::Definition.new(host: host, owner: owner, title: title).tap { |flow| TitledStart.new(flow).save }
