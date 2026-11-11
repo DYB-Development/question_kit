@@ -41,6 +41,15 @@ module QuestionKit
       assert_response :ok
     end
 
+    test "a file of questions adds a question step for each row with its answers and right answer" do
+      flow = quiz
+      post ixport.import_run_path(uploaded("questions.csv", into: flow)), headers: as(@ours)
+
+      assert_equal [ [ "Which planet is largest?", [ [ "Mars", 0 ], [ "Jupiter", 1 ], [ "Venus", 0 ], [ "Earth", 0 ] ] ],
+                     [ "The Sun is a star.", [ [ "True", 1 ], [ "False", 0 ] ] ] ],
+        imported_steps(flow).map { |step| [ step.config["question"], step.config["answers"].map { |answer| answer.values_at("value", "weight") } ] }
+    end
+
     private
       def flow_host
         EasyFlow.host_named(QuestionKit.flow_host)
@@ -63,6 +72,10 @@ module QuestionKit
         Ixport::Import.last.tap do |import|
           patch ixport.import_mapping_path(import), params: { mapping: MAPPING }, headers: as(@ours)
         end
+      end
+
+      def imported_steps(flow)
+        EasyFlow::Document.new(flow.reload.document).nodes.select { |step| step.id.start_with?("question_") }
       end
 
       def as(customer)
