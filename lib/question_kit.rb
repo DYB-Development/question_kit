@@ -6,6 +6,7 @@ require "question_kit/answer_key"
 require "question_kit/time_taken"
 require "question_kit/titled_start"
 require "question_kit/uploaded_question"
+require "question_kit/uploaded_questions"
 require "question_kit/answer_explanations"
 
 module QuestionKit
