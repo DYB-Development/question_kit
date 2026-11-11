@@ -65,6 +65,10 @@ module QuestionKit
       assert_raises(ActiveRecord::RecordNotUnique) { TitledStart.new(flow).save }
     end
 
+    test "a very long title makes a slug cut to the fixed length" do
+      assert_equal 100, started(Random.new(1).alphanumeric(6000)).slug.length
+    end
+
     private
       def started(title, host: "quizzes", owner: nil)
         EasyFlow::Definition.new(host: host, owner: owner, title: title).tap { |flow| TitledStart.new(flow).save }
