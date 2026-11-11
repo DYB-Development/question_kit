@@ -69,7 +69,8 @@ locals cover them.
 - **Right answer** — on a choice question, an answer whose weight is above
   zero.
 - **Accepted answer** — on a fill-in-the-blank question, a text the admin lists
-  as correct. An accepted answer left blank does not count.
+  as correct. The list of accepted answers a quiz shows leaves out any left
+  blank.
 - **Worth** — what one answer counts toward the quiz's result:
   - a single choice answer is worth the weight of the answer picked, and zero
     when it has none;
@@ -93,7 +94,9 @@ locals cover them.
   2. The words `manage`, `pages` and `runs` are never used as an address.
 - **Uploaded question** — one row of a CSV file an admin uploads to a quiz. Its
   columns are Type, Question, Category, Answer 1 to Answer 6, and Right answer.
-  - Type is true/false or multiple choice.
+  - Type is true/false or multiple choice, read without regard to capitals,
+    spaces or punctuation.
+  - Category is saved on the question when it is filled in.
   - A true/false row gets the answers True and False, and its Right answer is
     true or false.
   - A multiple choice row needs at least two answers, and its Right answer is

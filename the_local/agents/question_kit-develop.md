@@ -59,14 +59,14 @@ Every scoring, key and timing method that takes a `step` takes the step's settin
    - `steps` is a hash from step id (string) to that step's settings hash.
    - `answers` is a hash from step id to the value the visitor gave. Ids may be strings or symbols.
 6. Score one answer with `QuestionKit::Score.worth(step, value)`:
-   - Single-choice: `value` is the chosen answer's value, and the result is that answer's weight, or 0 when it carries none or matches no answer.
+   - Single-choice: `value` is the chosen answer's value, matched exactly, including letter case, and the result is that answer's weight, or 0 when it carries none or matches no answer.
    - Multiple-select: `value` is the list of ticked values, and the result is 1 when they are exactly the right answers in any order and 0 otherwise. Partial credit is not given.
    - Fill-in-the-blank: `value` is the typed text, and the result is 1 when it matches an accepted answer after removing outer spaces and ignoring letter case, and 0 otherwise.
 7. Score a whole run with `QuestionKit::Score.total(answers, steps)`. An answer whose step id is not in `steps` counts 0, so steps that are not questions, such as info or branch steps, can be left in `answers` or taken out.
 8. Ask the developer whether a score of 0 for a single-choice question with no weights set is correct for their quizzes, or whether every quiz must set weights before it is published. question_kit cannot tell an unweighted question from a wrong answer.
 9. Show what was right:
    - `QuestionKit::Score.right_answers(step)` for the full list of values with a positive weight on a choice step.
-   - `QuestionKit::AnswerKey.chosen(step)` for the single thing to display as the key: the list of right values for multiple-select, the first accepted answer for fill-in-the-blank, and the first right value for any other question. It returns `nil` when there is none, so render that case.
+   - `QuestionKit::AnswerKey.chosen(step)` for the single thing to display as the key: the list of right values for multiple-select, the first accepted answer for fill-in-the-blank, and the first right value for any other question. With no right or accepted answer it returns an empty list for multiple-select and `nil` for every other type, so render both cases.
    - `QuestionKit::AnswerKey.accepted(step)` for every accepted spelling on a fill-in-the-blank step, with blank entries left out.
 10. Time a run with `QuestionKit::TimeTaken.seconds(run)`, passing the easy_flow run record. It returns `nil` when the run's flow saves answers only once the flow ends, and when no step has been completed yet; render both cases, for example as "not timed".
 
@@ -117,7 +117,8 @@ Every scoring, key and timing method that takes a `step` takes the step's settin
     - `Question` — the question text. A blank question refuses the row.
     - `Category` — optional; saved as the question's category when filled.
     - `Answer 1` to `Answer 6` — the answers of a multiple choice question, of which at least two must be filled. A true/false question ignores them and always offers `True` and `False`.
-    - `Right answer` — for multiple choice, the number of the filled answer that is right, such as `2`; for true/false, `true` or `false` in any letter case. A right answer that names no answer refuses the row.
+    - `Right answer` — for multiple choice, the number of the answer column that is right, such as `2` for `Answer 2`, counted by column even when an earlier column is blank; for true/false, `true` or `false` in any letter case. Outer spaces are ignored. A right answer that names no filled answer refuses the row.
+    - Each answer text is saved with its outer spaces removed, and the question text is saved as given.
 18. Each accepted row becomes a single-choice question step whose right answer has weight 1 and every other answer weight 0, so `Score.worth` scores it 1 or 0. Every row is added as a new question; an upload never matches or updates an existing question.
 19. Each question is added to the quiz's draft, after the last question a visitor can reach and before whatever step followed it, and is recorded in the quiz's edit history as an added step. Visitors are asked the uploaded questions only once the quiz is published. Tell the developer that the builder must publish after uploading.
 
@@ -136,7 +137,7 @@ Every scoring, key and timing method that takes a `step` takes the step's settin
     end
     ```
 
-    The accepted keys are `type`, `question`, `category`, `right_answer` and each name in `QuestionKit::UploadedQuestion::ANSWER_FIELDS`. The rules in step 17 and the placement in step 19 apply. Build the answer keys from `ANSWER_FIELDS` rather than typing `answer_1` to `answer_6`.
+    The accepted keys are `type`, `question`, `category`, `right_answer` and each name in `QuestionKit::UploadedQuestion::ANSWER_FIELDS`. The rules in step 17 and the placement in step 19 apply. A refused question carries its errors on `:question`, `:type`, `:answers` or `:right_answer`. Build the answer keys from `ANSWER_FIELDS` rather than typing `answer_1` to `answer_6`.
 
 ### Answer explanations
 
