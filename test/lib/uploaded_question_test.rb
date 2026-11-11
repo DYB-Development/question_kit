@@ -85,6 +85,5 @@ module QuestionKit
     test "a true/false row whose right answer is neither true nor false is refused for it" do
       assert_equal [ "Right answer must be true or false" ], row(type: "True/false", right_answer: "Yes").tap(&:validate).errors.full_messages
     end
-
   end
 end
