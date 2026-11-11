@@ -67,6 +67,15 @@ module QuestionKit
       assert_equal [ "start", "first", "end" ], EasyFlow::Document.new(flow.reload.document).nodes.map(&:id)
     end
 
+    test "questions imported into a quiz are asked once the quiz publishes" do
+      flow = quiz
+      post ixport.import_run_path(uploaded("questions.csv", into: flow)), headers: as(@ours)
+
+      flow.reload.publish
+
+      assert_includes flow.live_definition["nodes"].map { |step| step["question"] }, "Which planet is largest?"
+    end
+
     private
       def flow_host
         EasyFlow.host_named(QuestionKit.flow_host)
