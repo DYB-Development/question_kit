@@ -10,6 +10,10 @@ module QuestionKit
       assert_equal({ "value" => "string", "weight" => "integer" }, written_fields("multiple_select", "answers"))
     end
 
+    test "easy_flow's builder writes a fill in the blank's accepted answers with the value the score reads" do
+      assert_equal({ "value" => "string" }, written_fields("fill_in_the_blank", "accepted_answers"))
+    end
+
     private
 
     def written_fields(step_type, list)
