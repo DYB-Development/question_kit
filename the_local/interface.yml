@@ -2,6 +2,7 @@ scope: shared question and answer rules for easy_flow quizzes — what an answer
 
 install:
   - gem "question_kit"
+  - QuestionKit.flow_host = name
 
 develop:
   - QuestionKit::VERSION
@@ -11,11 +12,26 @@ develop:
   - QuestionKit::AnswerKey.chosen(step)
   - QuestionKit::AnswerKey.accepted(step)
   - QuestionKit::TimeTaken.seconds(run)
+  - QuestionKit.flow_host
+  - QuestionKit::TitledStart.new(flow).save
+  - QuestionKit::UploadedQuestion
+  - QuestionKit::UploadedQuestion::ANSWER_FIELDS
+  - QuestionKit::UploadedQuestions.new(flow)
+  - QuestionKit::QuestionImporter
+  - QuestionKit::QuestionImporter.allows?(account, quiz)
+  - QuestionKit::AnswerExplanations
+  - QuestionKit::AnswerExplanations::TEXT
 
 sources:
   - question_kit.gemspec
   - lib/question_kit.rb
   - lib/question_kit/version.rb
+  - lib/question_kit/railtie.rb
   - lib/question_kit/score.rb
   - lib/question_kit/answer_key.rb
   - lib/question_kit/time_taken.rb
+  - lib/question_kit/titled_start.rb
+  - lib/question_kit/uploaded_question.rb
+  - lib/question_kit/uploaded_questions.rb
+  - lib/question_kit/question_importer.rb
+  - lib/question_kit/answer_explanations.rb
