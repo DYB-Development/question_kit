@@ -5,8 +5,17 @@ install:
 
 develop:
   - QuestionKit::VERSION
+  - QuestionKit::Score.worth(step, value)
+  - QuestionKit::Score.total(answers, steps)
+  - QuestionKit::Score.right_answers(step)
+  - QuestionKit::AnswerKey.chosen(step)
+  - QuestionKit::AnswerKey.accepted(step)
+  - QuestionKit::TimeTaken.seconds(run)
 
 sources:
   - question_kit.gemspec
   - lib/question_kit.rb
   - lib/question_kit/version.rb
+  - lib/question_kit/score.rb
+  - lib/question_kit/answer_key.rb
+  - lib/question_kit/time_taken.rb
