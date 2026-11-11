@@ -7,7 +7,7 @@ GIT
 PATH
   remote: .
   specs:
-    question_kit (0.2.0)
+    question_kit (0.3.0)
       easy_flow (~> 0.35)
       rails (>= 8.1.3)
 
