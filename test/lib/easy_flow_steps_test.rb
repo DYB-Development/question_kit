@@ -6,6 +6,10 @@ module QuestionKit
       assert_equal({ "value" => "string", "weight" => "integer" }, written_fields("question", "answers"))
     end
 
+    test "easy_flow's builder writes a multiple select's answers with the value and weight the score reads" do
+      assert_equal({ "value" => "string", "weight" => "integer" }, written_fields("multiple_select", "answers"))
+    end
+
     private
 
     def written_fields(step_type, list)
